@@ -1,0 +1,17 @@
+{
+  "name": "mycontact",
+  "description": "mycontact",
+  "version": "0.0.0",
+  "license": "",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-route": "~1.4.0",
+    "angular-loader": "~1.4.0",
+    "angular-mocks": "~1.4.0",
+    "html5-boilerplate": "~5.2.0",
+    "angularfire": "^2.3.0",
+    "jquery": "^3.2.1",
+    "foundation": "^5.5.3"
+  }
+}
