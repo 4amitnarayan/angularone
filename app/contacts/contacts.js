@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
+angular.module('myContacts.contacts', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/contacts', {
@@ -10,15 +10,100 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 }])
 
 //Contact Controller
-.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $firebaseArray) {
-	var ref = new Firebase('https://angularcontacts.firebaseio.com/contacts');
+.controller('ContactsCtrl', ['$scope',  function($scope) {
+	//Init Firebase
+  var user_Id = 1;
+	$scope.contacts =  [
+        {
+            'id':0,
+            'name': 'Mark Green',
+            'company': 'JP Morgan',
+            'email':'mark@jpm.com',
+            'phones': [{
+              'mobile': '000-234-23423',
+              'home': '2312-32432-324',
+              'work': '000-234234-234'
+          }],
+          'address': [{
+            'street_address': '10 Downing Streeet',
+            'city': 'New York',
+            'state': 'New York',
+            'zipcode': '10001'
+          }]
+        },{
+            'id':1,
+            'name': 'James Nash',
+            'company': 'Morgan Stanley',
+            'email':'james@ms.com',
+            'phones': [{
+              'mobile': '000-234-23423',
+              'home': '2312-32432-324',
+              'work': '000-234234-234'
+          }],
+          'address': [{
+            'street_address': '10 Downing Streeet',
+            'city': 'New York',
+            'state': 'New York',
+            'zipcode': '10001'
+          }]
+        },{
+            'id':2,
+            'name': 'Paul King',
+            'company': 'Deloitte',
+            'email':'paul@deloitte.com',
+            'phones': [{
+              'mobile': '000-234-23423',
+              'home': '2312-32432-324',
+              'work': '000-234234-234'
+          }],
+          'address': [{
+            'street_address': '10 Downing Streeet',
+            'city': 'New York',
+            'state': 'New York',
+            'zipcode': '10001'
+          }]
+        },{
+            'id':3,
+            'name': 'Stephen Greg',
+            'company': 'Bank of America',
+            'email':'stephen@ba.com',
+            'phones': [{
+              'mobile': '000-234-23423',
+              'home': '2312-32432-324',
+              'work': '000-234234-234'
+          }],
+          'address': [{
+            'street_address': '10 Downing Streeet',
+            'city': 'New York',
+            'state': 'New York',
+            'zipcode': '10001'
+          }]
+        },{
+            'id':4,
+            'name': 'Monica Adam',
+            'company': 'City Bank',
+            'email':'monica@citi.com',
+            'phones': [{
+              'mobile': '000-234-23423',
+              'home': '2312-32432-324',
+              'work': '000-234234-234'
+          }],
+          'address': [{
+            'street_address': '10 Downing Streeet',
+            'city': 'New York',
+            'state': 'New York',
+            'zipcode': '10001'
+          }]
+        },
+    ];
+	console.log($scope.contacts);
 
-	$scope.contacts = $firebaseArray(ref);
-
+	//Show Add Form
 	$scope.showAddForm = function(){
 		$scope.addFormShow = true;
 	}
 
+	//Show Edit Form
 	$scope.showEditForm = function(contact){
 		$scope.editFormShow = true;
 
@@ -43,7 +128,9 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 
 	//Sumbit Contacts
 	$scope.addFormSubmit = function(){
+		console.log('Adding Contact....');
 
+		//Assign Values
 		if($scope.name){ var name = $scope.name; } else { var name = null; }
 		if($scope.email){ var email = $scope.email; } else { var email = null; }
 		if($scope.company){ var company = $scope.company; } else { var company = null; }
@@ -55,6 +142,7 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 		if($scope.state){ var state = $scope.state; } else { var state = null; }
 		if($scope.zipcode){ var zipcode = $scope.zipcode; } else { var zipcode = null; }
 
+		//Build object
 		$scope.contacts.$add({
 			name: name,
 			email: email,
@@ -72,21 +160,30 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 			}]
 		}).then(function(ref){
 			var id = ref.key();
+			console.log('Added contact with ID: ' + id);
 
+			//Clear Form
 			clearFields();
 
+			//hide Form
 			$scope.addFormShow = false;
 
+			//Send Message
 			$scope.msg = "Contact Added";
 		})
 	}
 
+	//Update Contacts
 	$scope.editFormSubmit = function(){
+		console.log('Updating Contact....');
 
+		// Get ID
 		var id = $scope.id;
 
+		//Get Record
 		var record = $scope.contacts.$getRecord(id);
 
+		//Assign Values
 		record.name = $scope.name;
 		record.email = $scope.email;
 		record.company = $scope.company;
@@ -100,6 +197,7 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 
 		// Save Contact
 		$scope.contacts.$save(record).then(function(ref){
+			console.log(ref.key);
 		});
 
 		clearFields();
@@ -113,6 +211,7 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 
 	//Clear $scope Fields
 	function clearFields(){
+		console.log('Clearing All Fields...');
 
 		$scope.name = '';
 		$scope.email = '';
@@ -128,6 +227,7 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 
 	//Show Contact
 	$scope.showContact = function(contact){
+		console.log('Getting Contact...');
 
 		$scope.name = contact.name;
 		$scope.email = contact.email;
@@ -145,9 +245,8 @@ angular.module('myContacts.contacts', ['ngRoute', 'firebase'])
 
 	//Delete Contact
 	$scope.removeContact = function(contact) {
-
+		console.log('Removing Contact...');
 		$scope.contacts.$remove(contact);
-
 		$scope.msg = "Contact Removed";
 	}
 
